@@ -17,5 +17,7 @@ public interface ProductService {
 	public Product productById(Integer productId) throws AdminException;
 
 	public List<Product> getAllProduct() throws AdminException;
+	
+	public List<Product> sortProductAsc(String field) throws AdminException;
 
 }

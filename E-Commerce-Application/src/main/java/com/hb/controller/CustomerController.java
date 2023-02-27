@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hb.exceptions.AdminException;
 import com.hb.exceptions.CartException;
 import com.hb.exceptions.CustomerException;
 import com.hb.exceptions.OrderException;
@@ -31,6 +32,7 @@ import com.hb.models.ProductDtoSec;
 import com.hb.service.CartService;
 import com.hb.service.CustomerService;
 import com.hb.service.OrderService;
+import com.hb.service.ProductService;
 
 @RestController
 @RequestMapping("/Customer")
@@ -44,6 +46,9 @@ public class CustomerController {
     
 	@Autowired
 	OrderService orderService;
+	
+	@Autowired
+	ProductService productService;
    
     
 	
@@ -117,6 +122,11 @@ public class CustomerController {
 	public ResponseEntity<Orders> getOrderByid(@RequestParam Integer orderId) throws OrderException, CustomerException {
 		Orders order = orderService.getOrderById(orderId);
 		return new ResponseEntity<Orders>(order,HttpStatus.OK);
+	}
+	@GetMapping("/getSortedProductByAnyFieldAsc")
+	public ResponseEntity<List<Product>> getSortedProductByAnyField(@RequestParam String field) throws OrderException, CustomerException, AdminException {
+		List<Product> products = productService.sortProductAsc(field);
+		return new ResponseEntity<List<Product>>(products,HttpStatus.OK);
 	}
 	
 

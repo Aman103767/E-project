@@ -2,13 +2,15 @@ package com.hb.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.hb.exceptions.AdminException;
 import com.hb.models.Admin;
 import com.hb.models.Category;
 import com.hb.models.CurrentUserSession;
+import com.hb.models.Orders;
 import com.hb.models.Product;
 import com.hb.models.ProductDTO;
 import com.hb.repository.AdminDao;
@@ -27,11 +29,6 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Product createProduct(ProductDTO product) throws AdminException {
 		// TODO Auto-generated method stub
-         
-          
-        
-        
-     
        
 		Product p = new Product();
 		p.setProductName(product.getProductName());
@@ -112,11 +109,8 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<Product> getAllProduct() throws AdminException {
-		// TODO Auto-generated method stub
-	
-     
-        
-      
+		// TODO Auto-generated method stu
+		
            List<Product> products = pdao.findAll();
            if(products.size()==0) {
         	   throw new AdminException("No product found");
@@ -125,7 +119,16 @@ public class ProductServiceImpl implements ProductService {
         
 
 	}
+	@Override
+    public List<Product> sortProductAsc(String field) throws AdminException{
 
+    	List<Product> products = pdao.findAll(Sort.by(Sort.Direction.ASC,field));
+    	if(products.size()==0) {
+    		throw new AdminException("No product found");
+    	}
+		return products;
+   
+    }
 
 
 }
