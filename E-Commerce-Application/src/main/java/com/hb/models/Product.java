@@ -22,6 +22,7 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int productId;
+	private String imagePath;
 	private String productName;
 	private double price;
 	private String dimension;
@@ -32,6 +33,4 @@ public class Product {
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Category category;
-	
-
 }

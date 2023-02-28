@@ -19,6 +19,8 @@ public class ProductDtoSec {
 	private Integer Id;
 
 	private Integer productId;
+	
+	private String imagePath;
 
 	private String productName;
 

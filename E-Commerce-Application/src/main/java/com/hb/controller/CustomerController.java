@@ -6,10 +6,15 @@ import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,6 +38,7 @@ import com.hb.service.CartService;
 import com.hb.service.CustomerService;
 import com.hb.service.OrderService;
 import com.hb.service.ProductService;
+import com.hb.validations.CustomerValidation;
 
 @RestController
 @RequestMapping("/Customer")
@@ -49,13 +55,23 @@ public class CustomerController {
 	
 	@Autowired
 	ProductService productService;
-   
-    
+	
+	@Autowired
+	CustomerValidation validator;
+	
+	
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+    	binder.setValidator(validator);
+    }
 	
 	@PostMapping("/create")
-	public ResponseEntity<Customer> createCustomer( @RequestBody CustomerDTO cDTO) throws CustomerException{
+	public ResponseEntity<?> createCustomer(@Valid @RequestBody CustomerDTO cDTO,Errors errors) throws CustomerException{
 		
 		Customer cust = custService.createCustomer(cDTO);
+		if(errors.hasErrors()) {
+			return new ResponseEntity<>(errors.getAllErrors(),HttpStatus.BAD_REQUEST);
+		}
 		return new ResponseEntity<Customer>(cust,HttpStatus.OK);
 		
 		
@@ -128,6 +144,12 @@ public class CustomerController {
 		List<Product> products = productService.sortProductAsc(field);
 		return new ResponseEntity<List<Product>>(products,HttpStatus.OK);
 	}
+	@GetMapping("/productPagination")
+	public Page<Product> productPagination(@RequestParam Integer offset, @RequestParam Integer pageSize){
+		 Page<Product> products = productService.findProductWithPagination(offset, pageSize);
+		 return products;
+	}
+
 	
 
 }

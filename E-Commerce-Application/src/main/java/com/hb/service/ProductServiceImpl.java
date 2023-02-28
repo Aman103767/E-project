@@ -34,6 +34,7 @@ public class ProductServiceImpl implements ProductService {
        
 		Product p = new Product();
 		p.setProductName(product.getProductName());
+		p.setImagePath(product.getImagePath());
 		p.setQunatity(product.getQunatity());
 		p.setSpecification(product.getSpecification());
 		p.setDimension(product.getDimension());
@@ -78,6 +79,7 @@ public class ProductServiceImpl implements ProductService {
 			}
 			p.setProductName(product.getProductName());
 			p.setQunatity(product.getQunatity());
+			p.setImagePath(product.getImagePath());
 			p.setSpecification(product.getSpecification());
 			p.setDimension(product.getDimension());
 			p.setManufacturer(product.getManufacturer());
@@ -131,6 +133,7 @@ public class ProductServiceImpl implements ProductService {
 		return products;
    
     }
+	@Override
     public Page<Product> findProductWithPagination(int offset, int pageSize){
     	Page<Product> page = pdao.findAll(PageRequest.of(offset, pageSize));
     return page;

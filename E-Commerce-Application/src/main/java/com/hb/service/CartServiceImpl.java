@@ -51,6 +51,7 @@ public class CartServiceImpl implements CartService{
 		Cart c1 = customer.getCart();
 		  ProductDtoSec prodto2= new ProductDtoSec(); 
           prodto2.setProductId(productId);
+          prodto2.setImagePath(product.getImagePath());
           prodto2.setProductName(product.getProductName());
           prodto2.setQuantity(quantity);
           prodto2.setDimension(product.getDimension());
