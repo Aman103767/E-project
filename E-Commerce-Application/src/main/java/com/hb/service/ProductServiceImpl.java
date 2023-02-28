@@ -3,6 +3,8 @@ package com.hb.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -129,6 +131,9 @@ public class ProductServiceImpl implements ProductService {
 		return products;
    
     }
-
+    public Page<Product> findProductWithPagination(int offset, int pageSize){
+    	Page<Product> page = pdao.findAll(PageRequest.of(offset, pageSize));
+    return page;
+    }
 
 }
