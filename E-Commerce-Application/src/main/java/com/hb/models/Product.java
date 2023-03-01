@@ -28,7 +28,7 @@ public class Product {
 	private String dimension;
 	private String specification;
 	private String manufacturer;
-	private int qunatity;
+	private int quantity;
 	
 	
 	@ManyToOne(cascade = CascadeType.ALL)

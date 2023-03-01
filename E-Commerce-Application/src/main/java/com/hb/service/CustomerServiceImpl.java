@@ -1,6 +1,7 @@
 package com.hb.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,9 +68,9 @@ public class CustomerServiceImpl implements CustomerService{
 		
 		
 		// TODO Auto-generated method stub
-		Customer customer = custDao.findById(customerId).get();
+		Optional<Customer> customer = custDao.findById(customerId);
 		if(customer != null ) {
-			return customer;
+			return customer.get();
 		}
 		else {
 			throw new CustomerException("No Customer found");

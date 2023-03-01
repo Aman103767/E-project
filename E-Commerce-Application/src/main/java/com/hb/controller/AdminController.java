@@ -7,8 +7,12 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hb.exceptions.AdminException;
 import com.hb.exceptions.CustomerException;
 import com.hb.exceptions.OrderException;
+import com.hb.exceptions.ProductException;
 import com.hb.models.Admin;
 import com.hb.models.Customer;
 import com.hb.models.Orders;
@@ -29,12 +34,15 @@ import com.hb.service.AdminService;
 import com.hb.service.CustomerService;
 import com.hb.service.OrderService;
 import com.hb.service.ProductService;
+import com.hb.validations.AdminValidation;
+import com.hb.validations.ProductValidation;
 
 import io.swagger.models.Response;
 
 
 @RestController
 @RequestMapping(value = "/admin")
+@CrossOrigin(origins = "*")
 public class AdminController {
 	
 	@Autowired
@@ -49,10 +57,26 @@ public class AdminController {
 	@Autowired
     private CustomerService custService;
 	
+   // @Autowired
+	//private ProductValidation productValidator;
+    
+    @Autowired
+    private  AdminValidation adminValidator;
+	
 
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+    	//binder.setValidator(productValidator);
+    	binder.setValidator(adminValidator);
+    }
+   
 	
 	@PostMapping("/create")
-	public ResponseEntity<Admin> saveAdmin(@Valid @RequestBody Admin admin) throws AdminException {
+	public ResponseEntity<?> saveAdmin(@Valid @RequestBody Admin admin, Errors errors) throws AdminException {
+		
+		if(errors.hasErrors()) {
+			return new ResponseEntity<>(errors.getAllErrors(),HttpStatus.BAD_REQUEST);
+		}
 		
 		Admin savedAdmin = AService.createAdmin(admin);
 		
@@ -61,16 +85,19 @@ public class AdminController {
 	}
 	
 	@PutMapping("/update")
-	public  ResponseEntity<Admin> updateAdmin(@Valid @RequestBody Admin admin) throws AdminException {
+	public  ResponseEntity<?> updateAdmin(@Valid @RequestBody Admin admin, Errors errors ) throws AdminException {
 		
+		if(errors.hasErrors()) {
+			return new ResponseEntity<>(errors.getAllErrors(),HttpStatus.BAD_REQUEST);
+		}
 		
 		Admin updatedCustomer= AService.updateAdmin(admin);
 				
 		return new ResponseEntity<Admin>(updatedCustomer,HttpStatus.OK);
 		
 	}
-	@DeleteMapping("/detete")
-	public ResponseEntity<String> deleteAdmin(@RequestParam Integer adminId) throws AdminException{
+	@DeleteMapping("/detete/{adminId}")
+	public ResponseEntity<String> deleteAdmin(@PathVariable Integer adminId) throws AdminException{
 		
 		String DeleteAdmin = AService.deleteAdmin(adminId);
 		
@@ -84,8 +111,8 @@ public class AdminController {
 		return new ResponseEntity<List<Customer>>(customers,HttpStatus.OK);
 	}
 	
-	@GetMapping("/viewById")
-	public ResponseEntity<Customer> findCustomerById(@PathVariable("customerId") Integer customerId) throws CustomerException{
+	@GetMapping("/viewById/{customerId}")
+	public ResponseEntity<Customer> findCustomerById(@PathVariable Integer customerId) throws CustomerException{
 		Customer customer = custService.viewCustomer(customerId);
 		
 		return new ResponseEntity<Customer>(customer,HttpStatus.OK);
@@ -94,35 +121,30 @@ public class AdminController {
 	
 
 	
-	@PostMapping("/createProduct")
-	public ResponseEntity<Product> createProduct(@RequestBody ProductDTO product ) throws AdminException {
-		Product p = pService.createProduct(product);
-		return new ResponseEntity<Product>(p,HttpStatus.OK);
-	}
 	
-    @DeleteMapping("/removeProduct")
-	public ResponseEntity<String> removeProduct(@RequestParam Integer productId) throws AdminException {
+	
+    @DeleteMapping("/removeProduct/{productId}")
+	public ResponseEntity<String> removeProduct(@PathVariable Integer productId) throws ProductException {
 		String mess = pService.removeProduct(productId);
 		return new ResponseEntity<String>(mess,HttpStatus.OK);
 	}
     
 	@PutMapping("/updateProduct")
-	public ResponseEntity<Product> updateProduct(@RequestBody ProductDTO product ) throws AdminException {
+	public ResponseEntity<?> updateProduct(@Valid @RequestBody ProductDTO product,Errors errors ) throws ProductException {
 		Product p = pService.updateProduct(product);
+		if(errors.hasErrors()) {
+			return new ResponseEntity<>(errors.getAllErrors(),HttpStatus.BAD_REQUEST);
+		}
 		return new ResponseEntity<Product>(p,HttpStatus.OK);
 	}
 	
-	@GetMapping("/getProductById") 
-	public ResponseEntity<Product> getProductById(@RequestParam Integer productId) throws AdminException{
+	@GetMapping("/getProductById/{productId}") 
+	public ResponseEntity<Product> getProductById(@PathVariable Integer productId) throws ProductException{
 		Product p = pService.productById(productId);
 		return new ResponseEntity<Product>(p,HttpStatus.OK);
 	}
 	
-	@GetMapping("/getAllProduct") 
-	public ResponseEntity<List<Product>> getAllProduct() throws AdminException{
-		List<Product> p = pService.getAllProduct();
-		return new ResponseEntity<List<Product>>(p,HttpStatus.OK);
-	}
+
 	@GetMapping("/getAllOrders")
 	public ResponseEntity<List<Orders>> getAllOrders() throws OrderException, CustomerException {
 		List<Orders> orders = orderService.getAllOrders();
@@ -133,8 +155,8 @@ public class AdminController {
     	List<Orders> orders = AService.getAllOrderLastMonth();
     	return new ResponseEntity<>(orders,HttpStatus.OK);
     }
-    @GetMapping("/getSortedOrdersByAnyField")
-	public ResponseEntity<List<Orders>> getSortedOrderByAnyField(@RequestParam String field) throws OrderException, CustomerException {
+    @GetMapping("/getSortedOrdersByAnyField/{field}")
+	public ResponseEntity<List<Orders>> getSortedOrderByAnyField(@PathVariable String field) throws OrderException, CustomerException {
 		List<Orders> orders = orderService.sortByfieldOrders(field);
 		return new ResponseEntity<List<Orders>>(orders,HttpStatus.OK);
 	}

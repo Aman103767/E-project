@@ -45,7 +45,7 @@ public class CartServiceImpl implements CartService{
 		Customer customer = c.get();
 		Product product = p.get();
 		
-		if(product.getQunatity()< quantity || quantity == 0) {
+		if(product.getQuantity()< quantity || quantity == 0) {
 			throw new CartException("Out of Stock");
 		}
 		Cart c1 = customer.getCart();
@@ -167,7 +167,7 @@ public class CartServiceImpl implements CartService{
 		           for(int i =0;i<products.size();i++) {
 		        	   if(productId == products.get(i).getProductId()) {
 		        		  
-		        		   if(quantity>product.getQunatity() || quantity == 0) {
+		        		   if(quantity>product.getQuantity() || quantity == 0) {
 		        			   throw new CartException("product out of Stock");
 		        		   }
 		        		   

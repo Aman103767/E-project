@@ -1,6 +1,6 @@
 package com.hb.service;
 
-import java.util.List;
+import java.util.List; 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.hb.exceptions.AdminException;
+import com.hb.exceptions.ProductException;
 import com.hb.models.Admin;
 import com.hb.models.Category;
 import com.hb.models.CurrentUserSession;
@@ -29,13 +30,13 @@ public class ProductServiceImpl implements ProductService {
 	private SessionDao sessionDao;
 
 	@Override
-	public Product createProduct(ProductDTO product) throws AdminException {
+	public Product createProduct(ProductDTO product) throws ProductException {
 		// TODO Auto-generated method stub
        
 		Product p = new Product();
 		p.setProductName(product.getProductName());
 		p.setImagePath(product.getImagePath());
-		p.setQunatity(product.getQunatity());
+		p.setQuantity(product.getQuantity());
 		p.setSpecification(product.getSpecification());
 		p.setDimension(product.getDimension());
 		p.setManufacturer(product.getManufacturer());
@@ -55,12 +56,12 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public String removeProduct(Integer productId) throws AdminException {
+	public String removeProduct(Integer productId) throws ProductException {
 		// TODO Auto-generated method stub
 		
 	        
 	       
-	         Product product =  pdao.findById(productId).orElseThrow(()->new AdminException("product odes not exist with id: "+ productId));
+	         Product product =  pdao.findById(productId).orElseThrow(()->new ProductException("product odes not exist with id: "+ productId));
 	          	
 	        pdao.delete(product);
 	        return "Product is remove successfully";
@@ -69,16 +70,16 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product updateProduct(ProductDTO product) throws AdminException {
+	public Product updateProduct(ProductDTO product) throws ProductException {
 		// TODO Auto-generated method stub
 		
 	       
 			Product p = pdao.findById(product.getProductId()).get();
 			if(p == null) {
-				throw new AdminException("Product not found with id :"+ product.getProductId());
+				throw new ProductException("Product not found with id :"+ product.getProductId());
 			}
 			p.setProductName(product.getProductName());
-			p.setQunatity(product.getQunatity());
+			p.setQuantity(product.getQuantity());
 			p.setImagePath(product.getImagePath());
 			p.setSpecification(product.getSpecification());
 			p.setDimension(product.getDimension());
@@ -98,11 +99,11 @@ public class ProductServiceImpl implements ProductService {
 	
 
 	@Override
-	public Product productById(Integer productId) throws AdminException {
+	public Product productById(Integer productId) throws ProductException {
 		// TODO Auto-generated method stub
 	
 	       
-	        	Product p = pdao.findById(productId).orElseThrow(()-> new AdminException("product not found with id :"+ productId));
+	        	Product p = pdao.findById(productId).orElseThrow(()-> new ProductException("product not found with id :"+ productId));
 	        	return p;
 	        
 	       
@@ -112,23 +113,23 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> getAllProduct() throws AdminException {
+	public List<Product> getAllProduct() throws ProductException {
 		// TODO Auto-generated method stu
 		
            List<Product> products = pdao.findAll();
            if(products.size()==0) {
-        	   throw new AdminException("No product found");
+        	   throw new ProductException("No product found");
            }
            return products;
         
 
 	}
 	@Override
-    public List<Product> sortProductAsc(String field) throws AdminException{
+    public List<Product> sortProductAsc(String field) throws ProductException{
 
     	List<Product> products = pdao.findAll(Sort.by(Sort.Direction.ASC,field));
     	if(products.size()==0) {
-    		throw new AdminException("No product found");
+    		throw new ProductException("No product found");
     	}
 		return products;
    
@@ -138,5 +139,15 @@ public class ProductServiceImpl implements ProductService {
     	Page<Product> page = pdao.findAll(PageRequest.of(offset, pageSize));
     return page;
     }
+
+	@Override
+	public List<Product> searchProductByName(String name) throws ProductException {
+		// TODO Auto-generated method stub
+		List<Product> products =  pdao.searchAllProductByName(name);
+		if(products.size()==0) {
+		  throw	new ProductException("No product found");
+		}
+	    return products;
+	}
 
 }

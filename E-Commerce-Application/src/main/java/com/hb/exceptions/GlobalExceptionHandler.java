@@ -43,7 +43,18 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<MyErrorDetails>(err, HttpStatus.NOT_FOUND);
 		
 	}
-	
+	@ExceptionHandler(ProductException.class)
+	public ResponseEntity<MyErrorDetails> customerExceptionHandler(ProductException se, WebRequest req){
+		
+		
+		MyErrorDetails err= new MyErrorDetails();
+			err.setTimestamp(LocalDateTime.now());
+			err.setMessage(se.getMessage());
+			err.setDetails(req.getDescription(false));
+				
+		return new ResponseEntity<MyErrorDetails>(err, HttpStatus.NOT_FOUND);
+		
+	}
 	@ExceptionHandler(LoginException.class)
 	public ResponseEntity<MyErrorDetails> loginExceptionHandler(LoginException se, WebRequest req){
 		

@@ -86,7 +86,7 @@ public class OrderServiceImpl implements OrderService{
 		odao.save(order);
 		for(ProductDtoSec p : cart.getCartproducts()) {
 			Product product = pdao.findById(p.getProductId()).get();
-			product.setQunatity(product.getQunatity()-p.getQuantity());
+			product.setQuantity(product.getQuantity()-p.getQuantity());
 			pdao.save(product);
 		}
 		cart.getCartproducts().clear();
@@ -120,7 +120,7 @@ public class OrderServiceImpl implements OrderService{
 	        	
 	        	for(ProductDtoSec p : products) {
 	        		Product pro = pdao.findById(p.getProductId()).get();
-	        		pro.setQunatity(pro.getQunatity()+p.getQuantity());
+	        		pro.setQuantity(pro.getQuantity()+p.getQuantity());
 	        		pdao.save(pro);
 	        	}
 	        	odao.save(order);

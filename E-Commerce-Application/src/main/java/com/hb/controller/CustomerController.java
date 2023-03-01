@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -27,6 +28,7 @@ import com.hb.exceptions.AdminException;
 import com.hb.exceptions.CartException;
 import com.hb.exceptions.CustomerException;
 import com.hb.exceptions.OrderException;
+import com.hb.exceptions.ProductException;
 import com.hb.models.AddressDto;
 import com.hb.models.Cart;
 import com.hb.models.Customer;
@@ -42,6 +44,7 @@ import com.hb.validations.CustomerValidation;
 
 @RestController
 @RequestMapping("/Customer")
+@CrossOrigin(origins = "*")
 public class CustomerController {
 	
     @Autowired
@@ -60,6 +63,8 @@ public class CustomerController {
 	CustomerValidation validator;
 	
 	
+
+	
     @InitBinder
     public void initBinder(WebDataBinder binder) {
     	binder.setValidator(validator);
@@ -77,22 +82,25 @@ public class CustomerController {
 		
 	}
 	@PutMapping("/update")
-	public  ResponseEntity<Customer> updateCustomer(@Valid @RequestBody CustomerDTO customer ) throws CustomerException {
+	public  ResponseEntity<?> updateCustomer(@Valid @RequestBody CustomerDTO customer,Errors errors) throws CustomerException {
 		
-		
+	
 		Customer updatedCustomer= custService.updateCustomer(customer);
+		if(errors.hasErrors()) {
+			return new ResponseEntity<>(errors.getAllErrors(),HttpStatus.BAD_REQUEST);
+		}
 				
 		return new ResponseEntity<Customer>(updatedCustomer,HttpStatus.OK);
 		
 	}
 	
-    @GetMapping("/cart")
-	public ResponseEntity<String> addToCart(@RequestParam Integer customerId,@RequestParam Integer quantity,@RequestParam Integer productId ) throws CartException, CustomerException{
+    @GetMapping("/cart/{customerId}/{quantity}/{productId}")
+	public ResponseEntity<String> addToCart(@PathVariable Integer customerId,@PathVariable Integer quantity,@PathVariable Integer productId ) throws CartException, CustomerException{
 	    	String mess = cservice.addProductToCart(customerId,quantity, productId);
 	    	return new ResponseEntity<String>(mess, HttpStatus.OK);
 	    }
-	@GetMapping("/getAllProductAddedInCart")
-	public ResponseEntity<List<ProductDtoSec>> getAllProductAddedToCart(@RequestParam Integer CustomerId) throws CartException, CustomerException{
+	@GetMapping("/getAllProductAddedInCart/{customerId}")
+	public ResponseEntity<List<ProductDtoSec>> getAllProductAddedToCart(@PathVariable Integer CustomerId) throws CartException, CustomerException{
 	   List<ProductDtoSec> products = cservice.getAllProduct(CustomerId);
 	   
 	   return new ResponseEntity<List<ProductDtoSec>>(products,HttpStatus.OK);
@@ -100,8 +108,8 @@ public class CustomerController {
 	    }
 	
 
-	@PostMapping("/orderProduct")
-	public ResponseEntity<Orders> Order(@RequestParam Integer CustomerId,@RequestBody AddressDto addDto) throws OrderException, CustomerException{
+	@PostMapping("/orderProduct/{customerId}")
+	public ResponseEntity<Orders> Order(@PathVariable Integer CustomerId,@RequestBody AddressDto addDto) throws OrderException, CustomerException{
 		
 		Orders order = orderService.OrderProducts(CustomerId,addDto);
 		
@@ -109,45 +117,57 @@ public class CustomerController {
 		
 		
 	}
-	@DeleteMapping("/removeProductFromCart")
-	public ResponseEntity<String> removeProductFromCart(@RequestParam Integer productId,@RequestParam String key,@RequestParam Integer CustomerId) throws CustomerException, CartException{
+	@DeleteMapping("/removeProductFromCart/{productId}/{customerId}")
+	public ResponseEntity<String> removeProductFromCart(@PathVariable Integer productId,@PathVariable Integer CustomerId) throws CustomerException, CartException{
 		String mess = cservice.removeProductfromCart(productId, CustomerId);
 		return new ResponseEntity<String>(mess, HttpStatus.OK);
 		
 	}
 	
-	@GetMapping("/updatingQuantity")
-	public ResponseEntity<ProductDtoSec> updateQuantityOfProduct(@RequestParam Integer productId,@RequestParam Integer quantity,@RequestParam String key,@RequestParam Integer CustomerId ) throws CustomerException,CartException{
+	@GetMapping("/updatingQuantity/{productId}/{quantity}/{customerId}")
+	public ResponseEntity<ProductDtoSec> updateQuantityOfProduct(@PathVariable Integer productId,@PathVariable Integer quantity,@PathVariable Integer CustomerId ) throws CustomerException,CartException{
 		ProductDtoSec productdto = cservice.updateQuantity(productId, quantity, CustomerId);
 		return new  ResponseEntity<ProductDtoSec>(productdto,HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/removeAllProductfromCart")
-	public ResponseEntity<Cart> removeAllProduct(@RequestParam String key,@RequestParam Integer customerId) throws CustomerException, CartException {
+	@DeleteMapping("/removeAllProductfromCart/{customerId}")
+	public ResponseEntity<Cart> removeAllProduct(@PathVariable Integer customerId) throws CustomerException, CartException {
 		Cart cart = cservice.removeAllProduct( customerId);
 		return new  ResponseEntity<Cart>(cart,HttpStatus.OK);
 	}
-	@DeleteMapping("/cancelOrder")
-	public ResponseEntity<String> CancelOrder(@RequestParam Integer orderId) throws OrderException, CustomerException{
+	@DeleteMapping("/cancelOrder/{orderId}")
+	public ResponseEntity<String> CancelOrder(@PathVariable Integer orderId) throws OrderException, CustomerException{
 		 
 		String mess = orderService.cancelOrder(orderId);
 		return new ResponseEntity<String>(mess,HttpStatus.OK);
 		
 	}
-	@GetMapping("/getOrderById")
-	public ResponseEntity<Orders> getOrderByid(@RequestParam Integer orderId) throws OrderException, CustomerException {
+	@GetMapping("/getOrderById/{orderId}")
+	public ResponseEntity<Orders> getOrderByid(@PathVariable Integer orderId) throws OrderException, CustomerException {
 		Orders order = orderService.getOrderById(orderId);
 		return new ResponseEntity<Orders>(order,HttpStatus.OK);
 	}
-	@GetMapping("/getSortedProductByAnyFieldAsc")
-	public ResponseEntity<List<Product>> getSortedProductByAnyField(@RequestParam String field) throws OrderException, CustomerException, AdminException {
+	@GetMapping("/getSortedProductByAnyFieldAsc/{field}")
+	public ResponseEntity<List<Product>> getSortedProductByAnyField(@PathVariable String field) throws OrderException, CustomerException, ProductException {
 		List<Product> products = productService.sortProductAsc(field);
 		return new ResponseEntity<List<Product>>(products,HttpStatus.OK);
 	}
-	@GetMapping("/productPagination")
-	public Page<Product> productPagination(@RequestParam Integer offset, @RequestParam Integer pageSize){
+	@GetMapping("/productPagination/{offset}/{pageSize}")
+	public ResponseEntity<Page<Product>> productPagination(@PathVariable Integer offset, @PathVariable Integer pageSize){
 		 Page<Product> products = productService.findProductWithPagination(offset, pageSize);
-		 return products;
+		 return new ResponseEntity<Page<Product>>(products,HttpStatus.OK);
+	}
+	
+	@GetMapping("/searchAllByProductByName/{name}")
+	public ResponseEntity<List<Product>> searchAllByProducts(@PathVariable String name) throws ProductException{
+		List<Product> products =  productService.searchProductByName(name);
+		return new ResponseEntity<>(products,HttpStatus.OK);
+		
+	}
+	@GetMapping("/getAllProduct") 
+	public ResponseEntity<List<Product>> getAllProduct() throws ProductException{
+		List<Product> p = productService.getAllProduct();
+		return new ResponseEntity<List<Product>>(p,HttpStatus.OK);
 	}
 
 	
