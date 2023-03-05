@@ -1,11 +1,15 @@
 package com.hb.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,6 +46,15 @@ public class ProductController {
 		//if(errors.hasErrors()) {
 		//	return new ResponseEntity<>(errors.getAllErrors(),HttpStatus.BAD_REQUEST);
 		//}
+		return new ResponseEntity<Product>(p,HttpStatus.OK);
+	}
+	@PutMapping("/updateProduct/{productId}")
+	public ResponseEntity<?> updateProduct(@PathVariable Integer productId,
+			@Valid @RequestBody ProductDTO product,Errors errors ) throws ProductException {
+		Product p = pService.updateProduct(product,productId);
+		if(errors.hasErrors()) {
+			return new ResponseEntity<>(errors.getAllErrors(),HttpStatus.BAD_REQUEST);
+		}
 		return new ResponseEntity<Product>(p,HttpStatus.OK);
 	}
 	

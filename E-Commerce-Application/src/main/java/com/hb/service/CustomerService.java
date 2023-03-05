@@ -10,9 +10,11 @@ public interface CustomerService {
 	
  public Customer createCustomer(CustomerDTO customer) throws CustomerException;
 
- public Customer updateCustomer(CustomerDTO customer) throws CustomerException;
+ public Customer updateCustomer(CustomerDTO customer,Integer customerId) throws CustomerException;
 
  public Customer viewCustomer(Integer customerId) throws CustomerException;
 
  public List<Customer> viewCustomerAll() throws CustomerException;
+ 
+ public String deleteCustomer(Integer customerId) throws CustomerException;
 }

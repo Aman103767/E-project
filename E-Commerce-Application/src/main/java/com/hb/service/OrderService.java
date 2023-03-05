@@ -17,7 +17,10 @@ public interface OrderService {
   
   public Orders getOrderById(Integer orderId) throws OrderException,CustomerException;
   
-  public List<Orders> getAllOrders() throws OrderException,CustomerException;
+  public List<Orders> getAllOrdersByCustomer(Integer customerId) throws OrderException,CustomerException;
   
 	public List<Orders> sortByfieldOrders(String field) throws OrderException, CustomerException;
+  
+	public List<Orders> getAllOrders() throws OrderException, CustomerException;
+
 }

@@ -29,7 +29,10 @@ public class CustomerValidation implements Validator {
 	public void validate(Object target, Errors errors) {
 		// TODO Auto-generated method stub
 		CustomerDTO custDto =  (CustomerDTO)target;
-		String [] arr  = custDto.getName().split(" ");
+		if(custDto.getUsername() == "" || custDto.getUsername() == null) {
+			return;
+		}
+		String [] arr  = custDto.getUsername().split(" ");
 		for(String i: arr) {
 			if(i.charAt(0)<65 || i.charAt(0)> 90) {
 				 errors.rejectValue("name", "try again","name first and last character must be capital");

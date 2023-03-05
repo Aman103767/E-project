@@ -16,6 +16,6 @@ public class ProductDTO {
 	private String specification;
 	private String manufacturer;
 	private int quantity;
-	private String CategoryName;
+	private String categoryName;
 
 }

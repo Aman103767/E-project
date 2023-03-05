@@ -15,13 +15,15 @@ public interface ProductService {
     
 	public String removeProduct(Integer productId) throws ProductException;
 	
-	public Product updateProduct(ProductDTO product) throws ProductException;
+	public Product updateProduct(ProductDTO product,Integer productId) throws ProductException;
 	
 	public Product productById(Integer productId) throws ProductException;
 
 	public List<Product> getAllProduct() throws ProductException;
 	
 	public List<Product> sortProductAsc(String field) throws ProductException;
+	
+	public List<Product> sortProductDsc(String field) throws ProductException;
 	
 	public Page<Product> findProductWithPagination(int offset, int pageSize) ;
 	

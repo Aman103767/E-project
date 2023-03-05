@@ -1,6 +1,6 @@
 package com.hb.service;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.List;
 import java.util.Optional;
 
@@ -11,14 +11,14 @@ import com.hb.exceptions.AdminException;
 import com.hb.exceptions.CartException;
 import com.hb.exceptions.CustomerException;
 import com.hb.models.Cart;
-import com.hb.models.CurrentUserSession;
+
 import com.hb.models.Customer;
 import com.hb.models.Product;
 import com.hb.models.ProductDtoSec;
 import com.hb.repository.CartDao;
 import com.hb.repository.CustomerDao;
 import com.hb.repository.ProductDao;
-import com.hb.repository.SessionDao;
+
 
 @Service
 public class CartServiceImpl implements CartService{
@@ -29,8 +29,7 @@ public class CartServiceImpl implements CartService{
 	private CartDao cartdao;
    @Autowired
    private CustomerDao custdao;
-   @Autowired
-   private SessionDao sessionDao;
+
 	
 	@Override
 	public String addProductToCart(Integer customerId,Integer quantity,Integer productId) throws  CustomerException, CartException {
@@ -102,8 +101,11 @@ public class CartServiceImpl implements CartService{
      
         
     
-        Customer cust = custdao.findById(CustomerId).get();
-        Cart cart = cust.getCart();
+        Optional<Customer> cust = custdao.findById(CustomerId);
+       if(cust.isPresent()== false) {
+    	   throw new CustomerException("Customer not found");
+       }
+        Cart cart = cust.get().getCart();
         if(cart == null) {
         	throw new CartException("Please add product to cart first!");
         }

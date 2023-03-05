@@ -1,6 +1,6 @@
 package com.hb.service;
 
-import java.time.LocalDate;
+import java.time.LocalDate; 
 import java.util.List; 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.hb.exceptions.AdminException;
 import com.hb.models.Admin;
-import com.hb.models.CurrentUserSession;
+
 import com.hb.models.Orders;
 import com.hb.repository.AdminDao;
-import com.hb.repository.SessionDao;
+
 
 @Service 
 public class AdminServiceImpl implements AdminService {
@@ -21,8 +21,6 @@ public class AdminServiceImpl implements AdminService {
 	@Autowired
 	private AdminDao aDao;
 	
-	@Autowired
-	private SessionDao sDao;
 	
 	
 	

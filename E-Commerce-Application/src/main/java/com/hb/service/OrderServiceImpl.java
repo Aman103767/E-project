@@ -1,6 +1,6 @@
 package com.hb.service;
 
-import java.time.LocalDate; 
+import java.time.LocalDate;  
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +16,7 @@ import com.hb.exceptions.OrderException;
 import com.hb.models.Address;
 import com.hb.models.AddressDto;
 import com.hb.models.Cart;
-import com.hb.models.CurrentUserSession;
+
 import com.hb.models.Customer;
 import com.hb.models.Orders;
 import com.hb.models.Product;
@@ -25,7 +25,7 @@ import com.hb.repository.CartDao;
 import com.hb.repository.CustomerDao;
 import com.hb.repository.OrderDao;
 import com.hb.repository.ProductDao;
-import com.hb.repository.SessionDao;
+
 @Service
 public class OrderServiceImpl implements OrderService{
 	@Autowired
@@ -38,9 +38,7 @@ public class OrderServiceImpl implements OrderService{
 	
 	@Autowired
     private OrderDao odao;
-	
-	@Autowired
-	private SessionDao sessionDao;
+
 
 	@SuppressWarnings("unused")
 	@Override
@@ -159,6 +157,22 @@ public class OrderServiceImpl implements OrderService{
 	
 	}
 
+	@Override
+	public List<Orders> getAllOrdersByCustomer(Integer customerId) throws OrderException, CustomerException {
+		// TODO Auto-generated method stub
+	
+		     List<Orders> ordersByCustomer = new ArrayList<>();
+	        	List<Orders> orders = odao.findAll();
+	        	for(Orders o : orders) {
+	        		if(o.getCustomer().getCustomerId() == customerId) {
+	        			ordersByCustomer.add(o);
+	        		}
+	        	}
+	        	if(ordersByCustomer.size()== 0) {
+	        		throw new OrderException("No order found");
+	        	}
+	        	return ordersByCustomer ;
+	        }
 	@Override
 	public List<Orders> getAllOrders() throws OrderException, CustomerException {
 		// TODO Auto-generated method stub

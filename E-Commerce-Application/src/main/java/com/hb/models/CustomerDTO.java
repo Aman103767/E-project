@@ -18,7 +18,7 @@ public class CustomerDTO {
 //	@NotNull(message = "username cannot be null")
 	//@Size(min=4 , message = "length of username must be above 4 letters")
 
-	private String name;
+	private String username;
 	//@NotNull(message = "mobile number cannot be null")
 	//@Pattern(regexp = "[789]{1}[0-9]{9}",message = "invalid mobile number")
 	private String mobileNumber;

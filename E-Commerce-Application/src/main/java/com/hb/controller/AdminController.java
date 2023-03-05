@@ -129,14 +129,7 @@ public class AdminController {
 		return new ResponseEntity<String>(mess,HttpStatus.OK);
 	}
     
-	@PutMapping("/updateProduct")
-	public ResponseEntity<?> updateProduct(@Valid @RequestBody ProductDTO product,Errors errors ) throws ProductException {
-		Product p = pService.updateProduct(product);
-		if(errors.hasErrors()) {
-			return new ResponseEntity<>(errors.getAllErrors(),HttpStatus.BAD_REQUEST);
-		}
-		return new ResponseEntity<Product>(p,HttpStatus.OK);
-	}
+
 	
 	@GetMapping("/getProductById/{productId}") 
 	public ResponseEntity<Product> getProductById(@PathVariable Integer productId) throws ProductException{
