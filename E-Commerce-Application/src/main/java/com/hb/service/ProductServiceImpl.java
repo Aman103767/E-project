@@ -16,7 +16,10 @@ import com.hb.models.Category;
 import com.hb.models.Orders;
 import com.hb.models.Product;
 import com.hb.models.ProductDTO;
+import com.hb.models.ProductPage;
+import com.hb.models.ProductSearchCritaria;
 import com.hb.repository.AdminDao;
+import com.hb.repository.ProductCriteriaRepository;
 import com.hb.repository.ProductDao;
 
 
@@ -26,6 +29,8 @@ public class ProductServiceImpl implements ProductService {
 	private ProductDao pdao;
 	@Autowired
 	private AdminDao adminDao;
+	@Autowired
+	private  ProductCriteriaRepository productCriteriaRepository;
 
 
 	@Override
@@ -160,5 +165,10 @@ public class ProductServiceImpl implements ProductService {
 		return products;
 		
 	}
+	public Page<Product> getProduct(ProductPage productPage, 
+			ProductSearchCritaria productSearchCritaria){
+		return productCriteriaRepository.findAllWithFilters(productPage,productSearchCritaria);
+	}
+	
 
 }

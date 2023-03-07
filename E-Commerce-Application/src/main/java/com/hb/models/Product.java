@@ -32,5 +32,5 @@ public class Product {
 	
 	
 	@ManyToOne(cascade = CascadeType.ALL)
-	private Category category;
+	private Category category = new Category();
 }
