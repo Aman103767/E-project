@@ -21,6 +21,7 @@ import com.hb.models.Customer;
 import com.hb.models.Orders;
 import com.hb.models.Product;
 import com.hb.models.ProductDtoSec;
+import com.hb.repository.AddressDao;
 import com.hb.repository.CartDao;
 import com.hb.repository.CustomerDao;
 import com.hb.repository.OrderDao;
@@ -38,6 +39,9 @@ public class OrderServiceImpl implements OrderService{
 	
 	@Autowired
     private OrderDao odao;
+	
+	@Autowired
+	private AddressDao addressDao;
 
 
 	@SuppressWarnings("unused")
@@ -68,6 +72,7 @@ public class OrderServiceImpl implements OrderService{
 	     add.setCountry(address.getCountry());
 	     add.setPincode(address.getPincode());
 	     add.setState(address.getState());
+	     add = addressDao.save(add);
 	     cust.setAddress(add);
 	     custdao.save(cust);
 	     

@@ -19,7 +19,7 @@ import com.hb.service.OrderService;
 
 @RestController
 @RequestMapping(value = "/order")
-@CrossOrigin(origins = "*")
+
 public class OrderController {
 
 	@Autowired

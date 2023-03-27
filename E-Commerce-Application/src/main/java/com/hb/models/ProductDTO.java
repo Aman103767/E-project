@@ -11,11 +11,11 @@ public class ProductDTO {
 	private Integer productId;
 	private String imagePath;
 	private String productName;
-	private double price;
+	private Double price;
 	private String dimension;
 	private String specification;
 	private String manufacturer;
-	private int quantity;
+	private Integer quantity;
 	private String categoryName;
 
 }

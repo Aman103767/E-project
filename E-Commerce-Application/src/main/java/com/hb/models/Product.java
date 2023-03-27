@@ -21,14 +21,14 @@ public class Product {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int productId;
+	private Integer productId;
 	private String imagePath;
 	private String productName;
-	private double price;
+	private Double price;
 	private String dimension;
 	private String specification;
 	private String manufacturer;
-	private int quantity;
+	private Integer quantity;
 	
 	
 	@ManyToOne(cascade = CascadeType.ALL)

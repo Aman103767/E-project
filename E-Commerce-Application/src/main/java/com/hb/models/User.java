@@ -1,6 +1,6 @@
 package com.hb.models;
 
-import java.time.LocalDate; 
+import java.time.LocalDate;  
 
 import javax.persistence.CascadeType;
 import javax.persistence.MappedSuperclass;
@@ -8,7 +8,7 @@ import javax.persistence.OneToOne;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hb.validations.NamingValidation;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

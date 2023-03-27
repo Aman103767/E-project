@@ -132,11 +132,16 @@ public class CartServiceImpl implements CartService{
 	           if(products.size() == 0) {
 	        	   throw new CartException("Please first add product to the cart");
 	           }
+	          boolean flag = true;
 	           for(int i =0;i<products.size();i++) {
 	        	   if(productId == products.get(i).getProductId()) {
 	        		   products.remove(i);
+	        		   flag = false;
 	        		   break;
 	        	   }
+	           }
+	           if(flag) {
+	        	   throw new CartException("Product is not added to cart please the product");
 	           }
 	           cart.setCartproducts(products);
 	           cartdao.save(cart);
@@ -175,11 +180,13 @@ public class CartServiceImpl implements CartService{
 		        		   
 		        		   products.get(i).setQuantity(quantity);
 		        		   prodto = products.get(i);
+		        		   System.out.println(prodto);
 		        		   break;
 		        	   }
 		           }
 		           cart.setCartproducts(products);
 		           cartdao.save(cart);
+		           
 		          
 	        	return prodto;
 	        	

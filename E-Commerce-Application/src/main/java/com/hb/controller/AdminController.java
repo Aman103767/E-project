@@ -42,7 +42,7 @@ import io.swagger.models.Response;
 
 @RestController
 @RequestMapping(value = "/admin")
-@CrossOrigin(origins = "*")
+
 public class AdminController {
 	
 	@Autowired

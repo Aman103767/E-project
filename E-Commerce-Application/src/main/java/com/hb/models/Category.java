@@ -25,7 +25,7 @@ public class Category {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int catId;
 	private String categoryName;		
-	@OneToMany(cascade = CascadeType.ALL,mappedBy = "category")
+	@OneToMany(cascade = CascadeType.ALL)
 	@JsonIgnore
 	private List<Product> products = new ArrayList<>();
 

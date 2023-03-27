@@ -1,6 +1,6 @@
 package com.hb.models;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;  
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -25,7 +25,7 @@ public class Customer extends User{
 	@Id
 	@GeneratedValue(strategy  = GenerationType.AUTO) 
 	private int customerId;
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.REMOVE)
 	private Address address;
 	
 	@OneToOne(cascade = CascadeType.ALL)

@@ -1,10 +1,10 @@
 package com.hb.models;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotNull; 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.hb.validations.NamingValidation;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

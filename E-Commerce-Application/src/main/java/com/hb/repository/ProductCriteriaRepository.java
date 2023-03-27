@@ -1,6 +1,6 @@
 package com.hb.repository;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.List;
 import java.util.Objects;
 
@@ -78,9 +78,18 @@ public class ProductCriteriaRepository {
 		List<Predicate> predicates = new ArrayList<>();
 		if(Objects.nonNull(productSearchCritaria.getProduct()) &&
 				Objects.nonNull(productSearchCritaria.getProduct().getProductName())) {
-			predicates.add(
-			criteriaBuilder.like(productRoot.get("productName"),
-					"%"+productSearchCritaria.getProduct().getProductName()+"%"));
+			predicates.add(criteriaBuilder.or(
+                 criteriaBuilder.like(criteriaBuilder.upper(productRoot.get("productName")), "%"+productSearchCritaria.getProduct().getProductName()+"%"),
+                 criteriaBuilder.like(criteriaBuilder.upper(productRoot.get("manufacturer")),"%"+productSearchCritaria.getProduct().getManufacturer()+"%"),
+                 criteriaBuilder.like(criteriaBuilder.upper(productRoot.get("specification")),"%"+productSearchCritaria.getProduct().getSpecification()+"%")
+                 
+                ));
+			
+			
+//			predicates.add(
+//			criteriaBuilder.like(productRoot.get("productName"),"%"+productSearchCritaria.getProduct().getProductName()+"%")
+		
+	        
 		}
 		return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 	}

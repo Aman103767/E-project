@@ -44,7 +44,7 @@ import com.hb.validations.CustomerValidation;
 
 @RestController
 @RequestMapping("/Customer")
-@CrossOrigin(origins = "*")
+
 public class CustomerController {
 	
     @Autowired
@@ -72,11 +72,11 @@ public class CustomerController {
 	
 	@PostMapping("/create")
 	public ResponseEntity<?> createCustomer(@Valid @RequestBody CustomerDTO cDTO,Errors errors) throws CustomerException{
-		
-		Customer cust = custService.createCustomer(cDTO);
 		if(errors.hasErrors()) {
 			return new ResponseEntity<>(errors.getAllErrors(),HttpStatus.BAD_REQUEST);
 		}
+		Customer cust = custService.createCustomer(cDTO);
+		
 		return new ResponseEntity<Customer>(cust,HttpStatus.OK);
 		
 		
@@ -84,12 +84,12 @@ public class CustomerController {
 	@PutMapping("/update/{customerId}")
 	public  ResponseEntity<?> updateCustomer(@PathVariable Integer customerId ,@Valid @RequestBody CustomerDTO customer,Errors errors) throws CustomerException {
 		
-	
-		Customer updatedCustomer= custService.updateCustomer(customer,customerId);
 		if(errors.hasErrors()) {
 			return new ResponseEntity<>(errors.getAllErrors(),HttpStatus.BAD_REQUEST);
 		}
-				
+			
+		Customer updatedCustomer= custService.updateCustomer(customer,customerId);
+			
 		return new ResponseEntity<Customer>(updatedCustomer,HttpStatus.OK);
 		
 	}
@@ -135,31 +135,8 @@ public class CustomerController {
 		return new ResponseEntity<String>(mess,HttpStatus.OK);
 		
 	}
-	
-	@GetMapping("/getSortedProductByAnyFieldAsc/{field}")
-	public ResponseEntity<List<Product>> getSortedProductByAnyField(@PathVariable String field) throws OrderException, CustomerException, ProductException {
-		List<Product> products = productService.sortProductAsc(field);
-		return new ResponseEntity<List<Product>>(products,HttpStatus.OK);
-	}
-	@GetMapping("/getSortedProductByAnyFieldDsc/{field}")
-	public ResponseEntity<List<Product>> getSortedProductByAnyFieldDesc(@PathVariable String field) throws OrderException, CustomerException, ProductException {
-		List<Product> products = productService.sortProductDsc(field);
-		return new ResponseEntity<List<Product>>(products,HttpStatus.OK);
-	}
-	
-	
-	@GetMapping("/productPagination/{offset}/{pageSize}")
-	public ResponseEntity<Page<Product>> productPagination(@PathVariable Integer offset, @PathVariable Integer pageSize){
-		 Page<Product> products = productService.findProductWithPagination(offset, pageSize);
-		 return new ResponseEntity<Page<Product>>(products,HttpStatus.OK);
-	}
-	
-	@GetMapping("/searchAllByProductByName/{name}")
-	public ResponseEntity<List<Product>> searchAllByProducts(@PathVariable String name) throws ProductException{
-		List<Product> products =  productService.searchProductByName(name);
-		return new ResponseEntity<>(products,HttpStatus.OK);
-		
-	}
+
+
 	@GetMapping("/getAllProduct") 
 	public ResponseEntity<List<Product>> getAllProduct() throws ProductException{
 		List<Product> p = productService.getAllProduct();

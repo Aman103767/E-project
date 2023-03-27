@@ -7,4 +7,5 @@ import lombok.Data;
 public class ProductSearchCritaria {
 	@Autowired
   Product product = new Product();
+  String price;
 }

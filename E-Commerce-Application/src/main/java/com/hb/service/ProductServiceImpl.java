@@ -90,11 +90,17 @@ public class ProductServiceImpl implements ProductService {
 			p.setDimension(product.getDimension());
 			p.setManufacturer(product.getManufacturer());
 			p.setPrice(product.getPrice());
-			Category c = new Category();
+			Category c = p.getCategory();
 			c.setCategoryName(product.getCategoryName());
+			List<Product> products = c.getProducts();
+			for(int i = 0;i<products.size();i++) {
+				if(products.get(i).getProductId() == productId) {
+					products.set(i, p);
+					break;
+				}
+			}
+			c.setProducts(products);
 			p.setCategory(c);
-			c.getProducts().add(p);
-			
 			pdao.save(p);
 			
 			return p;
