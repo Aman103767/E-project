@@ -35,7 +35,7 @@ import com.hb.validations.ProductValidation;
 
 @RestController
 @RequestMapping(value = "/product")
-
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProductController {
 
 	

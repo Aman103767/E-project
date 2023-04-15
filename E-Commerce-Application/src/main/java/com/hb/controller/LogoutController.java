@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LogoutController {
-    @Autowired
-    private HttpSession httpSession;
-    @GetMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletResponse response) {
-       Cookie cookie = new Cookie("JSESSIONID","");
-       response.addCookie(cookie);
-       System.out.println(cookie);
-       return new ResponseEntity<String>("Logout successfully",HttpStatus.ACCEPTED);
-    }
+//    @Autowired
+//    private HttpSession httpSession;
+//    @GetMapping("/logout")
+//    public ResponseEntity<String> logout(HttpServletResponse response) {
+//       Cookie cookie = new Cookie("JSESSIONID","");
+//       response.addCookie(cookie);
+//       System.out.println(cookie);
+//       return new ResponseEntity<String>("Logout successfully",HttpStatus.ACCEPTED);
+//    }
 }

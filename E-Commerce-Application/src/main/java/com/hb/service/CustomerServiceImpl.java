@@ -48,6 +48,7 @@ public class CustomerServiceImpl implements CustomerService{
 		cust.setEmail(customer.getEmail());
 		cust.setMobileNumber(customer.getMobileNumber());
 		cust.setPassword(bcript.encode(customer.getPassword()));
+		cust.setRole(customer.getRole());
 		custDao.save(cust);
 		return cust;
 		

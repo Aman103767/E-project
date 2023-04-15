@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMethodMappingNamingStrategy;
+
+import java.security.Principal;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import org.springframework.security.core.AuthenticationException;
@@ -35,61 +39,51 @@ import com.hb.exceptions.CustomerException;
 import com.hb.models.Customer;
 import com.hb.models.LoginForm;
 import com.hb.repository.CustomerDao;
+import com.hb.security.JwtAuthResponse;
+import com.hb.security.JwtUtil;
+import com.hb.service.CustomerDetailsService;
 
 
 
 @RestController
-
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LoginController {
 	
-	
-	
+	@Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private JwtUtil jwtTokenHelper;
     @Autowired
     private AuthenticationManager authenticationManager;
-
-
+    @Autowired
+    private CustomerDao custDao;
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginForm loginRequest, 
-                                         HttpServletResponse response,
-                                         HttpServletRequest request) {
-        try {
-        	   System.out.println(loginRequest);
-            org.springframework.security.core.Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-          
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            Cookie sessionCookie = new Cookie("JSESSIONID", request.getSession().getId());
-            response.addCookie(sessionCookie);
-            
-            return new ResponseEntity<Cookie>(sessionCookie,HttpStatus.OK);
-        } catch (AuthenticationException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+    public ResponseEntity<JwtAuthResponse> createToken(@RequestBody LoginForm request) throws Exception {
+    	System.out.println("aman");
+        this.authenticate(request.getUsername(),request.getPassword());
+        UserDetails userDetails=this.userDetailsService.loadUserByUsername(request.getUsername());
+        String token=this.jwtTokenHelper.generateTokens(userDetails);
+        JwtAuthResponse response=new JwtAuthResponse();
+        response.setToken(token);
+        return new ResponseEntity<JwtAuthResponse>(response, HttpStatus.OK);
+    }
+
+    private void authenticate(String username, String password) throws Exception {
+        UsernamePasswordAuthenticationToken authenticationToken=new UsernamePasswordAuthenticationToken(username,password);
+        try{
+            this.authenticationManager.authenticate(authenticationToken);
+        }
+        catch (BadCredentialsException bce){
+            throw new Exception("Bad credentials");
         }
     }
-
+    @PostMapping("/current-user")
+	public Customer getCurrentEmployee(@RequestBody JwtAuthResponse token) {
+		String username = jwtTokenHelper.getUsernameFromToken(token.getToken());
+		System.out.println("token--" + token);
+		System.out.println(username);
+		return custDao.findByMobileNumber(username);
+	}
 	
-	
-	@Autowired
-	private CustomerDao customerDao;
-	@GetMapping("/signIn")
-    public ResponseEntity<Customer> getLoggedInCustomerDetailsHandler(Authentication auth) throws CustomerException{
-    	
-    	Customer customer = customerDao.findByMobileNumber(auth.name());
-    	if(customer == null) {
-    		throw new CustomerException("customer not found");
-    	}
-    	return new ResponseEntity<>(customer,HttpStatus.ACCEPTED);
-    
-    	
-    }
-	@GetMapping("/current-user")
-    public ResponseEntity<Customer> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) throws CustomerException {
-		
-		if(userDetails == null) {
-			throw new CustomerException("Please login First");
-		}
-		Customer customer = customerDao.findByMobileNumber(userDetails.getUsername());
-        return new ResponseEntity<>(customer,HttpStatus.ACCEPTED);
-    }
 
 }

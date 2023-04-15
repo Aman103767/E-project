@@ -23,7 +23,7 @@ public class CustomerSecurity implements UserDetails{
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
 		List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-		grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
+		grantedAuthorities.add(new SimpleGrantedAuthority(customer.getRole()));
 		return grantedAuthorities;
 		
 	}

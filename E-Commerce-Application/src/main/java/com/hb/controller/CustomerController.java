@@ -44,7 +44,7 @@ import com.hb.validations.CustomerValidation;
 
 @RestController
 @RequestMapping("/Customer")
-
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CustomerController {
 	
     @Autowired

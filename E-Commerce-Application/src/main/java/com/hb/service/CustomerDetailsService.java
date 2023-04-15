@@ -19,6 +19,7 @@ public class CustomerDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Customer customer = customerDao.findByMobileNumber(username);
+		System.out.println(username);
 		if(customer!= null) {
 			return new CustomerSecurity(customer);
 		}
